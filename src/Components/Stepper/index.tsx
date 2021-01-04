@@ -9,29 +9,30 @@ import clsx from "clsx";
 import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
-import SettingsIcon from "@material-ui/icons/Settings";
-import GroupAddIcon from "@material-ui/icons/GroupAdd";
-import VideoLabelIcon from "@material-ui/icons/VideoLabel";
+import HttpsIcon from "@material-ui/icons/Https";
+import PaymentIcon from "@material-ui/icons/Payment";
 import StepConnector from "@material-ui/core/StepConnector";
 import Button from "@material-ui/core/Button";
 import Typography from "@material-ui/core/Typography";
 import { StepIconProps } from "@material-ui/core/StepIcon";
-import Form1 from "../Form1/Form1";
-
+import Form1 from "../Form1";
+import Form2 from "../Form2";
+import Form3 from "../Form3";
+import PersonIcon from "@material-ui/icons/Person";
+import DoneIcon from "@material-ui/icons/Done";
+import ReviewForm from "../ReviewForm";
 const ColorlibConnector = withStyles({
   alternativeLabel: {
     top: 22,
   },
   active: {
     "& $line": {
-      backgroundImage:
-        "linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)",
+      backgroundColor: "#4eb7f8 ",
     },
   },
   completed: {
     "& $line": {
-      backgroundImage:
-        "linear-gradient( 95deg,rgb(242,113,33) 0%,rgb(233,64,87) 50%,rgb(138,35,135) 100%)",
+      backgroundColor: "#4eb7f8 ",
     },
   },
   line: {
@@ -55,14 +56,16 @@ const useColorlibStepIconStyles = makeStyles({
     alignItems: "center",
   },
   active: {
-    backgroundImage:
-      "linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
+    backgroundColor: "#4eb7f8 ",
+
     boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
   },
   completed: {
-    backgroundImage:
-      "linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
+    backgroundColor: "#4eb7f8 ",
   },
+  //   backgroundImage:
+  //     "linear-gradient( 136deg, rgb(242,113,33) 0%, rgb(233,64,87) 50%, rgb(138,35,135) 100%)",
+  // },
 });
 
 function ColorlibStepIcon(props: StepIconProps) {
@@ -70,9 +73,10 @@ function ColorlibStepIcon(props: StepIconProps) {
   const { active, completed } = props;
 
   const icons: { [index: string]: React.ReactElement } = {
-    1: <SettingsIcon />,
-    2: <GroupAddIcon />,
-    3: <VideoLabelIcon />,
+    1: <PersonIcon />,
+    2: <HttpsIcon />,
+    3: <PaymentIcon />,
+    4: <DoneIcon />,
   };
 
   return (
@@ -103,7 +107,7 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function getSteps() {
-  return ["Select campaign settings", "Create an ad group", "Create an ad"];
+  return ["Personal", "Account", "Payment", "Finish"];
 }
 
 function getStepContent(step: number) {
@@ -111,9 +115,11 @@ function getStepContent(step: number) {
     case 0:
       return <Form1 />;
     case 1:
-      return "What is an ad group anyways?";
+      return <Form2 />;
     case 2:
-      return "This is the bit I really care about!";
+      return <Form3 />;
+    case 3:
+      return <ReviewForm />;
     default:
       return "Unknown step";
   }
@@ -121,7 +127,7 @@ function getStepContent(step: number) {
 
 export default function CustomizedSteppers() {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = React.useState(3);
   const steps = getSteps();
 
   const handleNext = () => {
@@ -142,7 +148,7 @@ export default function CustomizedSteppers() {
         alternativeLabel
         activeStep={activeStep}
         connector={<ColorlibConnector />}
-        style={{ backgroundColor: "#f6f6f6" }}
+        style={{ backgroundColor: "#fff" }}
       >
         {steps.map((label) => (
           <Step key={label}>
@@ -152,7 +158,8 @@ export default function CustomizedSteppers() {
       </Stepper>
 
       <div>
-        {activeStep === steps.length ? (
+        {getStepContent(activeStep)}
+        {/* {activeStep === steps.length ? (
           <div>
             <Typography className={classes.instructions}>
               All steps completed - you&apos;re finished
@@ -162,29 +169,29 @@ export default function CustomizedSteppers() {
             </Button>
           </div>
         ) : (
-          <div>
-            <Typography className={classes.instructions}>
-              {getStepContent(activeStep)}
-            </Typography>
             <div>
-              <Button
-                disabled={activeStep === 0}
-                onClick={handleBack}
-                className={classes.button}
-              >
-                Back
-              </Button>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleNext}
-                className={classes.button}
-              >
-                {activeStep === steps.length - 1 ? "Finish" : "Next"}
-              </Button>
+              <Typography className={classes.instructions}>
+                {getStepContent(activeStep)}
+              </Typography>
+              <div>
+                <Button
+                  disabled={activeStep === 0}
+                  onClick={handleBack}
+                  className={classes.button}
+                >
+                  Back
+                </Button>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleNext}
+                  className={classes.button}
+                >
+                  {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                </Button>
+              </div>
             </div>
-          </div>
-        )}
+        )} */}
       </div>
     </div>
   );

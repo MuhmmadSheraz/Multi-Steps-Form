@@ -2,13 +2,17 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import CustomizedSteppers from "./Components/Stepper";
-import { Typography } from "@material-ui/core";
-import Form1 from "./Components/Form1/Form1";
+import { Box, Typography } from "@material-ui/core";
 
 function App() {
   return (
     <div className="FormBg">
-      <Form1 />
+      <div className="stepperWrapper">
+        <Box pt={2} textAlign="center">
+          <h1 className="heading">Sign Up Your User Account</h1>
+        </Box>
+        <CustomizedSteppers />
+      </div>
     </div>
   );
 }

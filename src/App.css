@@ -1,10 +1,54 @@
 .FormBg {
-  background-color: #f6f6f6 !important;
+  /* background-color: #f6f6f6 !important; */
+  background-image: linear-gradient(120deg, #ff4081, #81d4fa);
   height: 100vh;
   width: 100vw;
 }
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+.stepperWrapper {
+  background-color: white !important;
+  width: 500px;
+  min-height: 600px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 0px 20px;
+  border-radius: 10px;
+}
+@media (max-width: 550px) {
+  .stepperWrapper {
+    min-height: 600px;
+    width: 400px;
+  }
+  .bottomButtons {
+    padding-bottom: 10px;
+  }
+  .heading {
+    font-size: 25px;
+  }
+}
+@media (max-width: 420px) {
+  .stepperWrapper {
+    width: 350px;
+  }
+  .heading {
+    font-size: 22px;
+  }
+  .bottomButtons {
+    padding-bottom: 10px;
+  }
+}
+@media (max-width: 369px) {
+  .stepperWrapper {
+    width: 300px;
+    padding: 0;
+  }
+  .heading {
+    font-size: 18px;
+  }
 }
