@@ -75,7 +75,7 @@ const Form1 = (props: Props) => {
       .required("Required")
       .max(16, "Incorrect Length Of Card Number"),
     cardHolder: Yup.string().required().max(12, "Holder Name Is Too Long"),
-    cvc: Yup.string().required().max(3, "Incorrect Length"),
+    cvc: Yup.number().required().max(3, "Incorrect Length"),
   });
   console.log("Form 2 Data", props.formValue);
   return (

@@ -126,7 +126,7 @@ interface formData {
 export default function CustomizedSteppers() {
   const [formValues, setFormValues] = React.useState<any>({});
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(0);
+  const [activeStep, setActiveStep] = React.useState(2);
   const steps = getSteps();
 
   const handleNext = () => {

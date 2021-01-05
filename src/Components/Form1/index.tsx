@@ -19,7 +19,7 @@ interface MyFormValues {
   contactNumber: number;
   gender: string;
 }
-
+const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
 const validation = Yup.object({
   firstName: Yup.string()
     .min(5, "Too Short")
@@ -29,9 +29,11 @@ const validation = Yup.object({
     .min(3, "Too Short")
     .max(12, "Must Be 8 Character Or Less")
     .required("Required"),
-  contactNumber: Yup.number()
-    // .max(11, "Must be 11 digits")
-    .min(11, "Please Enter Valid No.")
+  contactNumber: Yup.string()
+    .min(11, "Must be exactly 11 digits") 
+    .max(11 , "Must be exactly 11 digits")
+
+    // .max(5, "Please Enter Valid No.")
     .required("Required"),
   gender: Yup.string().required("Required"),
 });
@@ -112,7 +114,6 @@ const Form1 = (props: Props) => {
                 name="contactNumber"
                 label="Contact Number"
                 as={TextField}
-               
               />
               <span style={{ color: "red" }}>
                 <ErrorMessage name="contactNumber" />

@@ -28,7 +28,7 @@ const ReviewForm = ({
   handleBack: () => void;
 }) => {
   const finish = () => {
-    Swal.fire("Good job!", "You clicked the button!", "success");
+    Swal.fire("Sign Up Successfully", "Form Submitted", "success");
     handleReset();
     setFormValue({});
   };
