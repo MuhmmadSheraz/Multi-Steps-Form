@@ -109,8 +109,22 @@ const useStyles = makeStyles((theme: Theme) =>
 function getSteps() {
   return ["Personal", "Account", "Payment", "Finish"];
 }
-
+interface formData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  userName: string;
+  paymentOption: string;
+  cardHolder: string;
+  gender: string;
+  cardNumber: number;
+  contactNumber: number;
+  cvc: number;
+}
 export default function CustomizedSteppers() {
+  const [formValues, setFormValues] = React.useState<any>({});
   const classes = useStyles();
   const [activeStep, setActiveStep] = React.useState(0);
   const steps = getSteps();
@@ -126,16 +140,47 @@ export default function CustomizedSteppers() {
   const handleReset = () => {
     setActiveStep(0);
   };
-  function getStepContent(step: number) {
+  function getStepContent(
+    step: number,
+    setFormValues: React.Dispatch<React.SetStateAction<{}>>,
+    formValue: formData
+  ) {
     switch (step) {
       case 0:
-        return <Form1 handleNext={handleNext} />;
+        return (
+          <Form1
+            handleNext={handleNext}
+            setFormValue={setFormValues}
+            formValue={formValues}
+          />
+        );
       case 1:
-        return <Form2 handleNext={handleNext} handleBack={handleBack} />;
+        return (
+          <Form2
+            handleNext={handleNext}
+            handleBack={handleBack}
+            setFormValue={setFormValues}
+            formValue={formValues}
+          />
+        );
       case 2:
-        return <Form3  handleNext={handleNext} handleBack={handleBack}/>;
+        return (
+          <Form3
+            handleNext={handleNext}
+            handleBack={handleBack}
+            setFormValue={setFormValues}
+            formValue={formValues}
+          />
+        );
       case 3:
-        return <ReviewForm />;
+        return (
+          <ReviewForm
+            formValue={formValues}
+            handleBack={handleBack}
+            handleReset={handleReset}
+            setFormValue={setFormValues}
+          />
+        );
       default:
         return "Unknown step";
     }
@@ -156,7 +201,7 @@ export default function CustomizedSteppers() {
       </Stepper>
 
       <div>
-        {getStepContent(activeStep)}
+        {getStepContent(activeStep, setFormValues, formValues)}
         {/* {activeStep === steps.length ? (
           <div>
             <Typography className={classes.instructions}>

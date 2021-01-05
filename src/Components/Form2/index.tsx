@@ -8,7 +8,18 @@ import {
   FieldProps,
   ErrorMessage,
 } from "formik";
-import { Box, Button, Radio, TextField, Typography } from "@material-ui/core";
+import {
+  Box,
+  Button,
+  Radio,
+  TextField,
+  Typography,
+  Input,
+} from "@material-ui/core";
+import IconButton from "@material-ui/core/IconButton";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import Visibility from "@material-ui/icons/Visibility";
+import VisibilityOff from "@material-ui/icons/VisibilityOff";
 import "./form2.css";
 import * as Yup from "yup";
 
@@ -18,9 +29,25 @@ interface MyFormValues {
   password: string;
   confirmPassword: string;
 }
+interface formData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  userName: string;
+  paymentOption: string;
+  cardHolder: string;
+  gender: string;
+  cardNumber: number;
+  contactNumber: number;
+  cvc: number;
+}
 interface Props {
   handleNext: () => void;
   handleBack: () => void;
+  formValue: formData;
+  setFormValue: React.Dispatch<React.SetStateAction<{}>>;
 }
 const lowercaseRegex = /(?=.*[a-z])/;
 
@@ -30,31 +57,36 @@ const numericRegex = /(?=.*[0-9])/;
 
 const validation = Yup.object({
   email: Yup.string().email().required("Email Required"),
-  userName: Yup.string().max(6, "Too Long").required("UserName Required"),
+  userName: Yup.string().max(12, "Too Long").required("UserName Required"),
   password: Yup.string()
     .matches(lowercaseRegex, "one lowercase required!")
     .matches(uppercaseRegex, "one uppercase required!")
-
     .matches(numericRegex, "one number required!")
-
     .min(8, "Minimum 8 characters required!")
-
-    .required("Required!")
-
-    .min(8, "Password is Too Short")
-    .max(12, "Password is Too Long")
+    .max(20, "Password is Too Long")
     .required("Password is require"),
   confirmPassword: Yup.string().when("password", {
-    is: (val: any) => (val && val.length > 0 ? true : false),
+    is: (val: string) => (val && val.length > 0 ? true : false),
     then: Yup.string().oneOf([Yup.ref("password")], "Password doesn't match"),
   }),
 });
 const Form2 = (props: Props) => {
+  const [isVisible, setIsVisble] = React.useState(false);
+  const [isVisibleConfirmPassword, setIsVisbleConfirmPassword] = React.useState(
+    false
+  );
+  const toggleVisible = () => {
+    setIsVisble(!isVisible);
+  };
+  console.log("props.formValue===> Form 2", props.formValue);
+  const toggleVisibleComfirmPassword = () => {
+    setIsVisbleConfirmPassword(!isVisibleConfirmPassword);
+  };
   const initialValues: MyFormValues = {
-    email: "",
-    userName: "",
-    password: "",
-    confirmPassword: "",
+    email: props.formValue.email,
+    userName: props.formValue.userName,
+    password: props.formValue.password,
+    confirmPassword: props.formValue.confirmPassword,
   };
   return (
     <div className="formBox">
@@ -62,8 +94,8 @@ const Form2 = (props: Props) => {
         initialValues={initialValues}
         onSubmit={(values, actions) => {
           console.log({ values, actions });
-          alert(JSON.stringify(values, null, 2));
           actions.setSubmitting(false);
+          props.setFormValue({ ...props.formValue, ...values });
           props.handleNext();
         }}
         validationSchema={validation}
@@ -99,14 +131,22 @@ const Form2 = (props: Props) => {
 
             <div className="eachField">
               <Field
-                type="password"
-                required
-                fullWidth
-                id="password"
+                type={isVisible ? "text" : "password"}
+                as={Input}
+                variant="outlined"
                 name="password"
-                label="Password"
-                as={TextField}
+                label="password"
+                placeholder="Password"
+                fullWidth
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton onClick={toggleVisible}>
+                      {isVisible ? <Visibility /> : <VisibilityOff />}
+                    </IconButton>
+                  </InputAdornment>
+                }
               />
+
               <span style={{ color: "red" }}>
                 <ErrorMessage name="password" />
               </span>
@@ -115,11 +155,23 @@ const Form2 = (props: Props) => {
               <Field
                 required
                 fullWidth
-                type="password"
                 id="confirmPassword"
                 name="confirmPassword"
                 label="Confirm Password"
-                as={TextField}
+                placeholder="Confirm Password"
+                type={isVisibleConfirmPassword ? "text" : "password"}
+                as={Input}
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton onClick={toggleVisibleComfirmPassword}>
+                      {isVisibleConfirmPassword ? (
+                        <Visibility />
+                      ) : (
+                        <VisibilityOff />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                }
               />
               <span className="error" style={{ color: "red" }}>
                 <ErrorMessage name="confirmPassword" />
@@ -132,11 +184,16 @@ const Form2 = (props: Props) => {
               variant="contained"
               color="secondary"
               onClick={props.handleBack}
-              style={{ marginRight: "5px" }}
+              // style={{ marginRight: "5px" }}
             >
               Previous
             </Button>
-            <Button variant="contained" color="secondary" type="submit">
+            <Button
+              variant="contained"
+              color="secondary"
+              type="submit"
+              className="nextBtn"
+            >
               Next
             </Button>
           </div>

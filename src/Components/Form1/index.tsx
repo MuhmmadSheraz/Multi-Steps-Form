@@ -16,46 +16,63 @@ import "./form1.css";
 interface MyFormValues {
   firstName: string;
   lastName: string;
-  contactNumber: string;
+  contactNumber: number;
   gender: string;
 }
-
-
 
 const validation = Yup.object({
   firstName: Yup.string()
     .min(5, "Too Short")
-    .max(8, "Must Be 8 Character Or Less")
+    .max(12, "Must Be 12 Character Or Less")
     .required("Required"),
   lastName: Yup.string()
-    .min(5, "Too Short")
-    .max(8, "Must Be 8 Character Or Less")
+    .min(3, "Too Short")
+    .max(12, "Must Be 8 Character Or Less")
     .required("Required"),
-  contactNumber: Yup.string()
-    .max(11, "Must be 11 digits")
+  contactNumber: Yup.number()
+    // .max(11, "Must be 11 digits")
     .min(11, "Please Enter Valid No.")
     .required("Required"),
   gender: Yup.string().required("Required"),
 });
+interface formData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  userName: string;
+  paymentOption: string;
+  cardHolder: string;
+  gender: string;
+  cardNumber: number;
+  contactNumber: number;
+  cvc: number;
+}
 interface Props {
   handleNext: () => void;
+  setFormValue: React.Dispatch<React.SetStateAction<{}>>;
+  formValue: formData;
 }
 const Form1 = (props: Props) => {
+  console.log("props==>", props);
   const initialValues: MyFormValues = {
-    firstName: "",
-    lastName: "",
-    contactNumber: "",
-    gender: "",
+    firstName: props.formValue.firstName,
+    lastName: props.formValue.lastName,
+    contactNumber: props.formValue.contactNumber,
+    gender: props.formValue.gender,
   };
 
   return (
     <div className="formBox">
       <Formik
         initialValues={initialValues}
-        onSubmit={(values, actions) => {
+        onSubmit={(values: MyFormValues, actions) => {
           console.log("submitted", values);
           console.log("Actions 1", actions);
           props.handleNext();
+          props.setFormValue({ ...props.formValue, ...values });
+          console.log(props.formValue);
         }}
         validationSchema={validation}
       >
@@ -95,6 +112,7 @@ const Form1 = (props: Props) => {
                 name="contactNumber"
                 label="Contact Number"
                 as={TextField}
+               
               />
               <span style={{ color: "red" }}>
                 <ErrorMessage name="contactNumber" />
@@ -129,7 +147,12 @@ const Form1 = (props: Props) => {
           </div>
 
           <div className="bottomButtons">
-            <Button variant="contained" color="secondary" type="submit">
+            <Button
+              variant="contained"
+              color="secondary"
+              type="submit"
+              className="nextBtn"
+            >
               Next
             </Button>
           </div>
