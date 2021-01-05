@@ -6,6 +6,7 @@ import {
   Form,
   Field,
   FieldProps,
+  ErrorMessage,
 } from "formik";
 import {
   Box,
@@ -22,29 +23,47 @@ import {
   Typography,
 } from "@material-ui/core";
 import "./form3.css";
+import { Agent } from "http";
+import * as Yup from "yup";
 
 interface MyFormValues {
-  firstName: string;
+  paymentOption: any;
+  date: string;
+  cardHolder: string;
+  cardNumber: string;
+  cvc: String;
 }
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    textField: {
-      marginLeft: theme.spacing(1),
-      marginRight: theme.spacing(1),
-      width: 200,
-    },
-  })
-);
-const Form1 = () => {
-  const [age, setAge] = React.useState("");
-  const [dateState, setDateState] = React.useState("");
+
+interface Props {
+  handleBack: () => void;
+  handleNext: () => void;
+}
+const Form1 = (props: Props) => {
+  // const [age, setAge] = React.useState<any>("Age");
+  // const [dateState, setDateState] = React.useState("");
   let todyaDate: any = new Date().toISOString().slice(0, 10);
   // todyaDate = todyaDate.getFullDate();
   console.log("today daate", todyaDate);
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    setAge(event.target.value as string);
+  // const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+  //   console.log(event.target.value);
+  //   let val: any = event.target.value;
+  //   setAge(val);
+  // };
+  const initialValues: MyFormValues = {
+    paymentOption: "",
+    cardHolder: "",
+    cardNumber: "",
+    date: "",
+    cvc: "",
   };
-  const initialValues: MyFormValues = { firstName: "" };
+  const Validation = Yup.object({
+    paymentOption: Yup.string(),
+    cardNumber: Yup.string()
+      .required("Required")
+      .max(16, "Incorrect Length Of Card Number"),
+    cardHolder: Yup.string().required().max(12, "Holder Name Is Too Long"),
+    cvc: Yup.string().required().max(3, "Incorrect Length"),
+  });
   return (
     <div className="formBox">
       <Formik
@@ -53,71 +72,88 @@ const Form1 = () => {
           console.log({ values, actions });
           alert(JSON.stringify(values, null, 2));
           actions.setSubmitting(false);
+          props.handleNext();
         }}
+        validationSchema={Validation}
       >
         <Form style={{ margin: "0 auto" }}>
           <div>
-            <InputLabel id="demo-simple-select-label">
-              Payment Option
-            </InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={age}
+            <InputLabel id="paymentOption">Payment Option</InputLabel>
+            <Field
               fullWidth
-              onChange={handleChange}
+              id="paymentOption"
+              name="paymentOption"
+              label="Card Type "
+              as={Select}
             >
-              <MenuItem value={"Credit Card"}>Credit Card</MenuItem>
-              <MenuItem value={"Paypal"}>Paypal</MenuItem>
-            </Select>
+              <option value="Credit Card">Credit Card</option>
+              <option value="Paypal">Paypal</option>
+            </Field>
+            <ErrorMessage name="paymentOption" />
+
             <div className="eachField">
               <Field
-                required
                 fullWidth
                 id="cardHolder"
                 name="cardHolder"
                 label="Card Holder Name"
                 as={TextField}
               />
+              <span style={{ color: "red" }}>
+                <ErrorMessage name="cardHolder" />
+              </span>
             </div>
 
-            <div style={{ display: "flex", }}>
+            <div style={{ display: "flex" }}>
               <Field
                 className="customeField"
-                required
                 fullWidth
                 id="cardNumber"
                 name="cardNumber"
                 label="Card Number"
                 as={TextField}
-                />
+              />
               <Field
                 className="customeField"
-                required
+                //
                 id="cvc"
                 name="cvc"
                 label="CVC"
                 as={TextField}
               />
             </div>
+            <span style={{ color: "red" }}>
+              <ErrorMessage name="cardNumber" />
+            </span>
+            <span style={{ color: "red", float: "right" }}>
+              <ErrorMessage name="cvc" />
+            </span>
             <div className="eachField">
               <Field
-                fullWidth
+                as={TextField}
                 id="date"
-                label="Date of expiry ?"
-                value={dateState !== "" ? dateState : todyaDate}
+                label="Expiry Date"
                 type="date"
+                defaultValue={todyaDate}
+                fullWidth
                 InputLabelProps={{
                   shrink: true,
                 }}
-                as={TextField}
-                onChange={(e: any) => setDateState(e.target.value)}
+                // as={TextField}
+                // onChange={(e: any) => setDateState(e.target.value)}
               />
             </div>
           </div>
-
           <div className="bottomButtons">
-            <Button variant="contained" color="secondary">
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={props.handleBack}
+              style={{ margin: "15px 5px" }}
+            >
+              Previous
+            </Button>
+            <Button variant="contained" color="secondary" type="submit">
               Next
             </Button>
           </div>

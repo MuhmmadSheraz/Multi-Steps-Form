@@ -6,16 +6,56 @@ import {
   Form,
   Field,
   FieldProps,
+  ErrorMessage,
 } from "formik";
 import { Box, Button, Radio, TextField, Typography } from "@material-ui/core";
 import "./form2.css";
+import * as Yup from "yup";
 
 interface MyFormValues {
-  firstName: string;
+  email: string;
+  userName: string;
+  password: string;
+  confirmPassword: string;
 }
+interface Props {
+  handleNext: () => void;
+  handleBack: () => void;
+}
+const lowercaseRegex = /(?=.*[a-z])/;
 
-const Form1 = () => {
-  const initialValues: MyFormValues = { firstName: "" };
+const uppercaseRegex = /(?=.*[A-Z])/;
+
+const numericRegex = /(?=.*[0-9])/;
+
+const validation = Yup.object({
+  email: Yup.string().email().required("Email Required"),
+  userName: Yup.string().max(6, "Too Long").required("UserName Required"),
+  password: Yup.string()
+    .matches(lowercaseRegex, "one lowercase required!")
+    .matches(uppercaseRegex, "one uppercase required!")
+
+    .matches(numericRegex, "one number required!")
+
+    .min(8, "Minimum 8 characters required!")
+
+    .required("Required!")
+
+    .min(8, "Password is Too Short")
+    .max(12, "Password is Too Long")
+    .required("Password is require"),
+  confirmPassword: Yup.string().when("password", {
+    is: (val: any) => (val && val.length > 0 ? true : false),
+    then: Yup.string().oneOf([Yup.ref("password")], "Password doesn't match"),
+  }),
+});
+const Form2 = (props: Props) => {
+  const initialValues: MyFormValues = {
+    email: "",
+    userName: "",
+    password: "",
+    confirmPassword: "",
+  };
   return (
     <div className="formBox">
       <Formik
@@ -24,7 +64,9 @@ const Form1 = () => {
           console.log({ values, actions });
           alert(JSON.stringify(values, null, 2));
           actions.setSubmitting(false);
+          props.handleNext();
         }}
+        validationSchema={validation}
       >
         <Form style={{ margin: "0 auto" }}>
           <div>
@@ -37,6 +79,9 @@ const Form1 = () => {
                 fullWidth
                 as={TextField}
               />
+              <span style={{ color: "red" }}>
+                <ErrorMessage name="email" />
+              </span>
             </div>
             <div className="eachField">
               <Field
@@ -47,6 +92,9 @@ const Form1 = () => {
                 label="User Name"
                 as={TextField}
               />
+              <span style={{ color: "red" }}>
+                <ErrorMessage name="userName" />
+              </span>
             </div>
 
             <div className="eachField">
@@ -59,6 +107,9 @@ const Form1 = () => {
                 label="Password"
                 as={TextField}
               />
+              <span style={{ color: "red" }}>
+                <ErrorMessage name="password" />
+              </span>
             </div>
             <div className="eachField">
               <Field
@@ -70,11 +121,22 @@ const Form1 = () => {
                 label="Confirm Password"
                 as={TextField}
               />
+              <span className="error" style={{ color: "red" }}>
+                <ErrorMessage name="confirmPassword" />
+              </span>
             </div>
           </div>
 
           <div className="bottomButtons">
-            <Button variant="contained" color="secondary">
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={props.handleBack}
+              style={{ marginRight: "5px" }}
+            >
+              Previous
+            </Button>
+            <Button variant="contained" color="secondary" type="submit">
               Next
             </Button>
           </div>
@@ -83,4 +145,4 @@ const Form1 = () => {
     </div>
   );
 };
-export default Form1;
+export default Form2;

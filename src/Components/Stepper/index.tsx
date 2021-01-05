@@ -110,24 +110,9 @@ function getSteps() {
   return ["Personal", "Account", "Payment", "Finish"];
 }
 
-function getStepContent(step: number) {
-  switch (step) {
-    case 0:
-      return <Form1 />;
-    case 1:
-      return <Form2 />;
-    case 2:
-      return <Form3 />;
-    case 3:
-      return <ReviewForm />;
-    default:
-      return "Unknown step";
-  }
-}
-
 export default function CustomizedSteppers() {
   const classes = useStyles();
-  const [activeStep, setActiveStep] = React.useState(3);
+  const [activeStep, setActiveStep] = React.useState(0);
   const steps = getSteps();
 
   const handleNext = () => {
@@ -141,7 +126,20 @@ export default function CustomizedSteppers() {
   const handleReset = () => {
     setActiveStep(0);
   };
-
+  function getStepContent(step: number) {
+    switch (step) {
+      case 0:
+        return <Form1 handleNext={handleNext} />;
+      case 1:
+        return <Form2 handleNext={handleNext} handleBack={handleBack} />;
+      case 2:
+        return <Form3  handleNext={handleNext} handleBack={handleBack}/>;
+      case 3:
+        return <ReviewForm />;
+      default:
+        return "Unknown step";
+    }
+  }
   return (
     <div className={classes.root}>
       <Stepper
